@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 const userSchema = new Schema({
   fullName: {
     type: String,
@@ -20,10 +21,15 @@ const userSchema = new Schema({
   confirmPassword: {
     type: String,
     required: true,
+    validate: {
+      validator: function (value) {
+        return this.password === value;
+      },
+      message: "Passwords do not match",
+    },
   },
   profilePicture: {
     type: String,
-    default: "default.jpg",
   },
   gender: {
     type: String,
@@ -43,6 +49,7 @@ const userSchema = new Schema({
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 10);
+  this.confirmPassword = undefined;
   next();
 });
 userSchema.methods.isPasswordCorrect = async function (password) {
