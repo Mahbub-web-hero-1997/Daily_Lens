@@ -1,42 +1,59 @@
 import mongoose, { Schema } from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-const userSchema = new Schema({
-  fullName: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    match: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-  },
-  password: {
-    type: String,
-    required: true,
-    // minlength: 8,
-    // match: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-  },
-  confirmPassword: {
-    type: String,
-    required: true,
-    validate: {
-      validator: function (value) {
-        return this.password === value;
+const userSchema = new Schema(
+  {
+    fullName: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      match: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+    },
+    password: {
+      type: String,
+      required: true,
+      // minlength: 8,
+      // match: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+    },
+    confirmPassword: {
+      type: String,
+      required: true,
+      validate: {
+        validator: function (value) {
+          return this.password === value;
+        },
+        message: "Passwords do not match",
       },
-      message: "Passwords do not match",
+    },
+    profilePicture: {
+      type: String,
+    },
+    gender: {
+      type: String,
+      enum: ["Male", "Female", "Other"],
+      default: "Male",
+    },
+    refreshToken: {
+      type: String,
+      default: null,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now,
     },
   },
-  profilePicture: {
-    type: String,
-  },
-  gender: {
-    type: String,
-    enum: ["Male", "Female", "Other"],
-    default: "Male",
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 // Conditional showing profile picture when user is not set a profile picture
 // userSchema.pre("save", function (next) {
 //   if (!this.profilePicture) {
@@ -57,9 +74,9 @@ userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 // Generate Access And Refresh Token
-userSchema.methods.generateAccessAndRefreshToken = async function () {
-  const token = await jwt.sign(
-    { _id, email, fullName },
+userSchema.methods.generateAccessToken = function () {
+  const token = jwt.sign(
+    { _id: this._id, email: this.email },
     process.env.ACCESS_TOKEN_SECRET_KEY,
     {
       expiresIn: process.env.ACCESS_TOKEN_EXPIRE,
@@ -67,10 +84,14 @@ userSchema.methods.generateAccessAndRefreshToken = async function () {
   );
   return token;
 };
-userSchema.methods.generateRefreshToken = async function () {
-  const token = await jwt.sign({ _id }, process.env.REFRESH_TOKEN_SECRET_KEY, {
-    expiresIn: process.env.REFRESH_TOKEN_EXPIRE,
-  });
+userSchema.methods.generateRefreshToken = function () {
+  const token = jwt.sign(
+    { _id: this._id },
+    process.env.REFRESH_TOKEN_SECRET_KEY,
+    {
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRE,
+    }
+  );
   return token;
 };
 const User = mongoose.model("User", userSchema);
