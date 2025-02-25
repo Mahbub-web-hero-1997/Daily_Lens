@@ -1,4 +1,3 @@
-import { response } from "express";
 import User from "../models/user.model.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
@@ -122,4 +121,58 @@ const LogOutUser = asyncHandler(async (req, res) => {
       new ApiResponse(200, null, { message: "User Logged Out Successfully" })
     );
 });
-export { registerUser, loginUser, LogOutUser };
+// Change Password
+const changePassword = asyncHandler(async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  const user = await User.findById(req.user._id);
+  const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
+  console.log(isPasswordCorrect);
+  if (!isPasswordCorrect) {
+    throw new ApiError(401, "Invalid old password");
+  }
+  user.password = newPassword;
+  await user.save({ validateBeforeSave: false });
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, null, { message: "Password Changed Successfully" })
+    );
+});
+// Update Profile Picture
+const updateProfilePicture = asyncHandler(async (req, res) => {
+  const profilePictureFilePath = req.file?.path;
+
+  if (!profilePictureFilePath) {
+    throw new ApiError(400, "Profile picture is required");
+  }
+  const profilePicture = await uploadOnCloudinary(profilePictureFilePath);
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      profilePicture: profilePicture.url,
+    },
+    { new: true }
+  );
+  if (!user) {
+    throw new ApiError(500, "Failed to update profile picture");
+  }
+  return res.status(200).json(
+    new ApiResponse(200, user, {
+      message: "Profile Picture Updated Successfully",
+    })
+  );
+});
+// Get Current User
+const getCurrentUser = asyncHandler(async (req, res) => {
+  return res
+    .status(200)
+    .json(200, req.user, "Current User fetched successfully");
+});
+export {
+  registerUser,
+  loginUser,
+  LogOutUser,
+  changePassword,
+  updateProfilePicture,
+  getCurrentUser,
+};

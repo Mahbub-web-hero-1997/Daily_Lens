@@ -69,6 +69,7 @@ userSchema.pre("save", async function (next) {
   this.confirmPassword = undefined;
   next();
 });
+
 userSchema.methods.isPasswordCorrect = async function (password) {
   if (!password) return null;
   return await bcrypt.compare(password, this.password);
@@ -82,6 +83,7 @@ userSchema.methods.generateAccessToken = function () {
       expiresIn: process.env.ACCESS_TOKEN_EXPIRE,
     }
   );
+
   return token;
 };
 userSchema.methods.generateRefreshToken = function () {
@@ -92,6 +94,7 @@ userSchema.methods.generateRefreshToken = function () {
       expiresIn: process.env.REFRESH_TOKEN_EXPIRE,
     }
   );
+
   return token;
 };
 const User = mongoose.model("User", userSchema);
