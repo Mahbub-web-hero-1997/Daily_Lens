@@ -19,7 +19,6 @@ const createNews = asyncHandler(async (req, res) => {
   }
   //   Upload News Image to cloudinary
   const imageLocalPath = await req.file?.path;
-  //   console.log(await req.file);
   //   console.log(await req.file?.path);
   if (!imageLocalPath) {
     throw new ApiError(400, "Image is required");
@@ -42,24 +41,38 @@ const createNews = asyncHandler(async (req, res) => {
 });
 // Get All news
 const getAllNews = asyncHandler(async (req, res) => {
-  const news = await News.find();
-  if (!news) return "No news available";
-  res
-    .status(200)
-    .json(
-      new ApiResponse(200, news, "All news have been fetched successfully")
-    );
+  let { page, limit } = req.query;
+  page = parseInt(page) || 1;
+  limit = parseInt(6);
+  const totalNews = await News.countDocuments();
+  const news = await News.find()
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .sort({ createdAt: -1 });
+  if (!news && !news.length) return "No news available";
+  res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        totalNews,
+        currentPage: page,
+        totalPages: Math.ceil(totalNews / limit),
+        news,
+      },
+      "All news have been fetched successfully"
+    )
+  );
 });
 // Get single news By Id
 const getSingleNewsById = asyncHandler(async (req, res) => {
-  const { id } = req.params; // Destructure the id from req.params
-  const news = await News.findById(id); // No need to use a query object, just pass the id
+  const { id } = req.params;
+  const news = await News.findById(id);
 
   if (!news) {
     throw new ApiError(404, "News not found");
   }
 
-  res.status(200).json(new ApiResponse(news, 200, "News fetched successfully"));
+  res.status(200).json(new ApiResponse(200, news, "News fetched successfully"));
 });
 // update a news
 const updateNews = asyncHandler(async (req, res) => {
@@ -77,7 +90,7 @@ const updateNews = asyncHandler(async (req, res) => {
   if (!news) {
     throw new ApiError(404, "News not found");
   }
-  res.status(200).json(new ApiResponse(news, 200, "News updated successfully"));
+  res.status(200).json(new ApiResponse(200, news, "News updated successfully"));
 });
 // Delete a news
 const deleteNews = asyncHandler(async (req, res) => {
