@@ -44,6 +44,7 @@ const getAllNews = asyncHandler(async (req, res) => {
   let { page, limit } = req.query;
   page = parseInt(page) || 1;
   limit = parseInt(6);
+
   const totalNews = await News.countDocuments();
   const news = await News.find()
     .skip((page - 1) * limit)
