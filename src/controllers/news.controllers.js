@@ -41,23 +41,23 @@ const createNews = asyncHandler(async (req, res) => {
 });
 // Get All news
 const getAllNews = asyncHandler(async (req, res) => {
-  let { page, limit } = req.query;
-  page = parseInt(page) || 1;
-  limit = parseInt(6);
+  // let { page, limit } = req.query;
+  // page = parseInt(page) || 1;
+  // limit = parseInt(6);
 
-  const totalNews = await News.countDocuments();
-  const news = await News.find()
-    .skip((page - 1) * limit)
-    .limit(limit)
-    .sort({ createdAt: -1 });
+  // const totalNews = await News.countDocuments();
+  const news = await News.find();
+  //   .skip((page - 1) * limit)
+  //   .limit(limit)
+  //   .sort({ createdAt: -1 });
   if (!news && !news.length) return "No news available";
   res.status(200).json(
     new ApiResponse(
       200,
       {
-        totalNews,
-        currentPage: page,
-        totalPages: Math.ceil(totalNews / limit),
+        // totalNews,
+        // currentPage: page,
+        // totalPages: Math.ceil(totalNews / limit),
         news,
       },
       "All news have been fetched successfully"
