@@ -47,9 +47,9 @@ const getAllNews = asyncHandler(async (req, res) => {
 
   // const totalNews = await News.countDocuments();
   const news = await News.find();
-  //   .skip((page - 1) * limit)
-  //   .limit(limit)
-  //   .sort({ createdAt: -1 });
+  // .skip((page - 1) * limit)
+  // .limit(limit)
+  // .sort({ createdAt: -1 });
   if (!news && !news.length) return "No news available";
   res.status(200).json(
     new ApiResponse(
