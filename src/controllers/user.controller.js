@@ -62,7 +62,6 @@ const registerUser = asyncHandler(async (req, res) => {
 });
 // User Login Api
 const loginUser = asyncHandler(async (req, res) => {
-  console.log(req);
   const { email, password } = req.body;
   if (!email || !password) {
     throw new ApiError(400, "Email and Password are required");
@@ -127,7 +126,6 @@ const changePassword = asyncHandler(async (req, res) => {
   const { oldPassword, newPassword } = req.body;
   const user = await User.findById(req.user._id);
   const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
-  console.log(isPasswordCorrect);
   if (!isPasswordCorrect) {
     throw new ApiError(401, "Invalid old password");
   }
@@ -165,9 +163,15 @@ const updateProfilePicture = asyncHandler(async (req, res) => {
 });
 // Get Current User
 const getCurrentUser = asyncHandler(async (req, res) => {
+  if (!req.user || !req.user._id) {
+    throw new ApiError(401, "Unauthorized - user not found");
+  }
+  const user = await User.findById(req.user._id).select(
+    "-password -refreshToken"
+  );
   return res
     .status(200)
-    .json(200, req.user, "Current User fetched successfully");
+    .json(new ApiResponse(200, user, "Current User Fetched Successfully"));
 });
 export {
   registerUser,

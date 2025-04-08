@@ -9,7 +9,12 @@ app.use(
     limit: "16kb",
   })
 );
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Replace with your frontend URL
+    credentials: true, // Allow credentials (cookies) to be sent
+  })
+);
 app.use(express.static("./public/temp"));
 app.use(
   express.urlencoded({
