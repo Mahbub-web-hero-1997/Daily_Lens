@@ -7,12 +7,16 @@ import uploadOnCloudinary from "../utils/cloudinary.js";
 // Generate Access And Refresh Token
 
 const generateAccessAndRefreshToken = async (userId) => {
-  const user = await User.findById(userId);
-  const accessToken = await user.generateAccessToken();
-  const refreshToken = await user.generateRefreshToken();
-  user.refreshToken = refreshToken;
-  await user.save({ validateBeforeSave: false });
-  return { accessToken, refreshToken };
+  try {
+    const user = await User.findById(userId);
+    const accessToken = await user.generateAccessToken();
+    const refreshToken = await user.generateRefreshToken();
+    user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: false });
+    return { accessToken, refreshToken };
+  } catch (error) {
+    throw new ApiError(500, "Failed to generate tokens", error);
+  }
 };
 
 // User Register Api
@@ -93,9 +97,8 @@ const loginUser = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         { user: loggedInUser, accessToken, refreshToken },
-        {
-          message: "User Logged In Successfully",
-        }
+
+        "User Logged In Successfully"
       )
     );
 });
@@ -163,15 +166,9 @@ const updateProfilePicture = asyncHandler(async (req, res) => {
 });
 // Get Current User
 const getCurrentUser = asyncHandler(async (req, res) => {
-  if (!req.user || !req.user._id) {
-    throw new ApiError(401, "Unauthorized - user not found");
-  }
-  const user = await User.findById(req.user._id).select(
-    "-password -refreshToken"
-  );
   return res
     .status(200)
-    .json(new ApiResponse(200, user, "Current User Fetched Successfully"));
+    .json(new ApiResponse(200, req.user, "Current User Fetched Successfully"));
 });
 export {
   registerUser,
