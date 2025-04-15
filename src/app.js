@@ -11,8 +11,8 @@ app.use(
 );
 app.use(
   cors({
-    origin: "http://localhost:5173", // Replace with your frontend URL
-    credentials: true, // Allow credentials (cookies) to be sent
+    origin: ["http://localhost:5173", "https://daily-lens-server.vercel.app/"],
+    credentials: true,
   })
 );
 app.use(express.static("./public/temp"));
@@ -25,8 +25,8 @@ app.use(
 
 app.use(
   cookieParser({
-    secure: false, // Set to true for production
-    httpOnly: true, // Set to true to make the cookie inaccessible via JavaScript
+    secure: false,
+    httpOnly: true,
   })
 );
 // Import All routes
@@ -35,7 +35,7 @@ import userRoute from "./route/user.route.js";
 import ApiResponse from "./utils/ApiResponse.js";
 app.use("/api/v1/news", newsRoute);
 app.use("/api/v1/user", userRoute);
-// http://localhost:3000/api/v1/news/post
+// https://daily-lens-server.vercel.app/api/v1/news/post
 app.get("/", (req, res) => {
   res.status(200).json(new ApiResponse(200, {}, "Welcome to Daily Lens API"));
 });
