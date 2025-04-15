@@ -19,6 +19,8 @@ router.route("/changePassword").post(verifyJwt, changePassword);
 router
   .route("/changeProfilePicture")
   .patch(upload.single("profilePicture"), verifyJwt, updateProfilePicture);
-router.route("/currentUser").get(verifyJwt, getCurrentUser);
+router
+  .route("/currentUser")
+  .get(verifyJwt, authorizedRoles("user"), getCurrentUser);
 router.route("/admin").get(verifyJwt, authorizedRoles("admin"), getCurrentUser);
 export default router;
