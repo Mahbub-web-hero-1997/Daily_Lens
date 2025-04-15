@@ -37,6 +37,6 @@ app.use("/api/v1/news", newsRoute);
 app.use("/api/v1/user", userRoute);
 // http://localhost:3000/api/v1/news/post
 app.get("/", (req, res) => {
-  res.status(200).json("Welcome to Daily Lens API");
+  res.status(200).json(new ApiResponse(200, {}, "Welcome to Daily Lens API"));
 });
 export default app;
