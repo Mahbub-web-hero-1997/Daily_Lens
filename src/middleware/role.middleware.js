@@ -1,3 +1,5 @@
+import ApiError from "../utils/ApiError.js";
+
 const authorizedRoles = (...allowedRoles) => {
   return (req, res, next) => {
     if (!req.user || !allowedRoles.includes(req.user.role)) {
