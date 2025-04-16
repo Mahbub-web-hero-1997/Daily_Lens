@@ -11,7 +11,10 @@ app.use(
 );
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: [
+      "http://localhost:5173",
+      "https://cosmic-frangipane-73525a.netlify.app",
+    ],
     credentials: true,
     sameSite: "None",
   })
