@@ -11,8 +11,9 @@ app.use(
 );
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://daily-lens-server.vercel.app/"],
+    origin: ["http://localhost:5173"],
     credentials: true,
+    sameSite: "None",
   })
 );
 app.use(express.static("./public/temp"));
@@ -35,7 +36,7 @@ import userRoute from "./route/user.route.js";
 import ApiResponse from "./utils/ApiResponse.js";
 app.use("/api/v1/news", newsRoute);
 app.use("/api/v1/user", userRoute);
-// https://daily-lens-server.vercel.app/api/v1/news/post
+// https://daily-lens-server.vercel.app/api/v1news/post
 app.get("/", (req, res) => {
   res.status(200).json(new ApiResponse(200, {}, "Welcome to Daily Lens API"));
 });
