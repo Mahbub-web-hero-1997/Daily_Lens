@@ -40,10 +40,12 @@ const registerUser = asyncHandler(async (req, res) => {
   }
   // Load Profile Picture
   const profilePictureFilePath = req.file?.path;
+  // console.log(req.file.path);
   if (!profilePictureFilePath) {
     throw new ApiError(400, "Profile picture is required");
   }
   const profilePicture = await uploadOnCloudinary(profilePictureFilePath);
+  // console.log(profilePicture);
   const user = await User.create({
     fullName,
     email,
@@ -55,14 +57,13 @@ const registerUser = asyncHandler(async (req, res) => {
   const createUser = await User.findById(user._id).select(
     "-password -refreshToken"
   );
+  // console.log(createUser);
   if (!createUser) {
     throw new ApiError(500, "Failed to create user");
   }
-  res.status(201).json(
-    new ApiResponse(200, createUser, {
-      message: "User Registered Successfully",
-    })
-  );
+  res
+    .status(201)
+    .json(new ApiResponse(200, createUser, "User Registered Successfully"));
 });
 // User Login Api
 const loginUser = asyncHandler(async (req, res) => {
