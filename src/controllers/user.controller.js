@@ -123,9 +123,7 @@ const LogOutUser = asyncHandler(async (req, res) => {
     .status(200)
     .clearCookie("accessToken", options)
     .clearCookie("refreshToken", options)
-    .json(
-      new ApiResponse(200, null, { message: "User Logged Out Successfully" })
-    );
+    .json(new ApiResponse(200, null, "User Logged Out Successfully"));
 });
 // Change Password
 const changePassword = asyncHandler(async (req, res) => {
