@@ -33,7 +33,7 @@ const createNews = asyncHandler(async (req, res) => {
     title,
     description,
     category,
-    image: image.url,
+    image,
   });
   res
     .status(201)
