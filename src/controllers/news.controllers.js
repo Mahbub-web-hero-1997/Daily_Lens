@@ -6,8 +6,10 @@ import uploadOnCloudinary from "../utils/cloudinary.js";
 // Create A news
 const createNews = asyncHandler(async (req, res) => {
   // Get the news Data from the body
-  const { title, description, category } = req.body;
-  if ([title, description, category].some((field) => field.trim() === "")) {
+  const { title, description, category, image } = req.body;
+  if (
+    [title, description, category, image].some((field) => field.trim() === "")
+  ) {
     throw new ApiError(400, "All fields are required");
   }
   //   Check news are already created
