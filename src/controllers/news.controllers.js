@@ -18,15 +18,15 @@ const createNews = asyncHandler(async (req, res) => {
     throw new ApiError(400, "News already exists");
   }
   //   Upload News Image to cloudinary
-  const imageLocalPath = await req.file?.path;
+  // const imageLocalPath = await req.file?.path;
   //   console.log(await req.file?.path);
-  if (!imageLocalPath) {
-    throw new ApiError(400, "Image is required");
-  }
-  const image = await uploadOnCloudinary(imageLocalPath);
-  if (!image) {
-    throw new ApiError(500, "Failed to upload image to cloudinary");
-  }
+  // if (!imageLocalPath) {
+  //   throw new ApiError(400, "Image is required");
+  // }
+  // const image = await uploadOnCloudinary(imageLocalPath);
+  // if (!image) {
+  //   throw new ApiError(500, "Failed to upload image to cloudinary");
+  // }
   const news = await News.create({
     title,
     description,
