@@ -22,7 +22,7 @@ router
     authorizedRoles("admin"),
     createNews
   );
-router.route("/all").get(verifyJwt, authorizedRoles, getAllNews);
+router.route("/all").get(getAllNews);
 router.route("/single-news/:id").get(getSingleNewsById);
 router
   .route("/update-news/:id")
