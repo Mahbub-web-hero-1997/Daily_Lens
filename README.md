@@ -36,9 +36,8 @@
 
 ## 📁 Project Structure
 
--- public > temp
--- src >
-
+📁 public
+📁 src
 - the-daily-lens-backend/
 - ├── controllers/ # Route handlers
 - ├── middleware/ # Auth & error middlewares
