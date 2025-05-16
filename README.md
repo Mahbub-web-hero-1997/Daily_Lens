@@ -36,9 +36,9 @@
 
 ## 📁 Project Structure
 
-📁 public
-📁 src
 - the-daily-lens-backend/
+- 📁 public
+- 📁 src
 - ├── controllers/ # Route handlers
 - ├── middleware/ # Auth & error middlewares
 - ├── models/ # Mongoose schemas
