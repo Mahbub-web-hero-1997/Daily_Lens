@@ -36,13 +36,13 @@
 
 ## 📁 Project Structure
 
-the-daily-lens-backend/
-├── controllers/ # Route handlers
-├── middleware/ # Auth & error middlewares
-├── models/ # Mongoose schemas
-├── routes/ # API route definitions
-├── utils/ # Utility functions
-├── temp/ # Temp image storage (optional)
-├── .env
-├── index.js
-└── app.js
+- the-daily-lens-backend/
+- ├── controllers/ # Route handlers
+- ├── middleware/ # Auth & error middlewares
+- ├── models/ # Mongoose schemas
+- ├── routes/ # API route definitions
+- ├── utils/ # Utility functions
+- ├── temp/ # Temp image storage (optional)
+- ├── .env
+- ├── index.js
+- └── app.js
